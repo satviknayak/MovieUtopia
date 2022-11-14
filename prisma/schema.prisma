@@ -9,3 +9,62 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Movie {
+   id Int @id@default(autoincrement())
+   title String 
+   overview String
+   category String
+   ratings String
+   release_date DateTime
+   trailer String
+   poster String
+   casts CastInMovie[]
+   genres GenreOfMovie[]
+   reviews Review[]
+}
+
+model Genre{
+  id Int @id@default(autoincrement())
+  name String
+  movies GenreOfMovie[]
+}
+
+model Cast{
+  name String
+  id Int @id@default(autoincrement())
+  overview String
+  dob DateTime
+  roles String[]
+  movies CastInMovie[]
+}
+
+model Review{
+  review_text String
+  review_rating  Int
+  id Int @id@default(autoincrement())
+  reviewer_name String
+  movie Movie @relation(fields: [movieId],references: [id]) 
+  movieId Int 
+
+}
+
+model CastInMovie{
+  movie Movie @relation(fields: [movieId],references: [id])
+  movieId Int
+  cast Cast @relation(fields: [castId],references: [id])
+  castId Int
+  role String
+
+  @@id([castId,movieId])
+}
+ 
+ model GenreOfMovie{
+  movie Movie @relation(fields: [movieId],references: [id])
+  movieId Int
+  genre Genre @relation(fields: [genreId],references: [id])
+  genreId Int
+  
+
+  @@id([genreId,movieId])
+ }
