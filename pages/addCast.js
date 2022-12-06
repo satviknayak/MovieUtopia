@@ -1,17 +1,18 @@
 import Head from 'next/head'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 import superjson from 'superjson'
-import {MdAddCircleOutline} from 'react-icons/md'
+import {MdAddCircleOutline,MdClose} from 'react-icons/md'
 
 
 export default function addCast() {
-
+    const router = useRouter()
     const [name,setName] = useState("")
     const [overview,setOverview] = useState("")
     const [dob,setDob] = useState("")
     const [photo,setPhoto] = useState("")
     const [role,setRole] = useState("")
-    const [roles,setRoles] = useState(["actor"])
+    const [roles,setRoles] = useState([])
 
     const submitData = {name:name,photo:photo,overview:overview,dob:dob.concat("T00:00:00.000Z"),roles:roles}
     const handleSubmit = async() =>{
@@ -20,10 +21,7 @@ export default function addCast() {
             body: superjson.stringify(submitData)
         })
         const submitResults = await response.json();
-    }
-
-    const addRoles = () => {
-
+        router.reload(window.location.pathname)
     }
 
 
@@ -55,12 +53,23 @@ export default function addCast() {
                 <tr className='w-full'>
                     <td className='text-[0.9rem] sm:text-[1.1rem] w-[30%]'>Roles:</td>
                     <td className='flex w-full h-[4rem] flex-col py-[10px]'>
-                        <div className='w-full flex p-[10px]'>
-
+                        <div className='w-full flex p-[10px] flex-wrap'>
+                        {roles?.map((a)=>(
+                            <span key={a} className='bg-red-200 rounded-full px-[10px] m-[5px] flex text-black'>{a}<MdClose className='m-auto' onClick={(e)=>{
+                              var dump = ""
+                              for(var i=0;i<roles.length;i++){
+                                if(roles[i] == a){
+                                  dump =roles.splice(i,1)
+                                }
+                              }
+                              setRoles(roles)
+                              e.currentTarget.parentElement.classList.add('hidden')
+                            }}/></span>
+                          ))}
                         </div>
                         <div className='flex'>
                             <input type={'text'} onChange={(e)=>{setRole(e.target.value)}} value={role} className='w-[80%] bg-transparent outline-none border-[1px] rounded-sm px-[5px]' />
-                            <MdAddCircleOutline className='text-white text-[1.75rem] m-auto' onClick={addRoles}/>
+                            <MdAddCircleOutline className='text-white text-[1.75rem] m-auto' onClick={()=>{setRoles(arr=>[...arr,role])}}/>
                         </div>
                         
                     </td>

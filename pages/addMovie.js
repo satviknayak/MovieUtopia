@@ -1,9 +1,11 @@
 import Head from 'next/head'
 import { useState } from 'react'
 import superjson from 'superjson'
+import {useRouter} from 'next/router'
 
 
 export default function addMovie() {
+    const router = useRouter()
 
     const [title,setTitle] = useState("")
     const [overview,setOverview] = useState("")
@@ -20,6 +22,7 @@ export default function addMovie() {
             body: superjson.stringify(submitData)
         })
         const submitResults = await response.json();
+        router.reload(window.location.pathname)
     }
 
 

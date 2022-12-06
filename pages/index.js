@@ -69,11 +69,9 @@ export default function Home({movies,genres}) {
       {searchResults.length === 0 ? 
       <Slider title='Sci-Fi' movies={scifiMovies}/> 
       : 
-      searchResults.map((a)=>(
+      searchResults?.map((a)=>(
         <div key={a.id} className='text-white'>hello</div>
-      ))
-
-      }
+      ))}
     
     
     </div>
