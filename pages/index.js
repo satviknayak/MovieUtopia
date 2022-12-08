@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { useState } from 'react'
+import Link from 'next/link'
 
 import {prisma} from '../libs/prisma'
 import superjson from 'superjson'
@@ -23,15 +24,17 @@ export default function Home({movies,genres}) {
 
   const [searchText,setSearchText] =  useState("");
   const [genre,setGenre] =  useState(0);
+  const [searchResults,setSearchResults] = useState([]);
 
   const searchData = {searchText:searchText,genre:genre}
-  var searchResults = []
+
   const handleSearch = async() =>{
     const response = await fetch('api/search',{
       method:'POST',
       body: superjson.stringify(searchData)
     })
-    searchResults = await response.json();
+    var sr = await response.json();
+    setSearchResults(sr.Results)
   }
 
   const genreList = genres.json
@@ -68,10 +71,15 @@ export default function Home({movies,genres}) {
 
       {searchResults.length === 0 ? 
       <Slider title='Sci-Fi' movies={scifiMovies}/> 
-      : 
-      searchResults?.map((a)=>(
-        <div key={a.id} className='text-white'>hello</div>
+      :
+      <div className='flex flex-wrap w-full px-[50px] '>
+      {searchResults?.map((a)=>(
+        <Link href={'/movies/'+a.id}><div className='flex min-w-[170px] w-[170px] h-[250px] mx-[10px] rounded-2xl overflow-hidden relative hover:scale-[1.1] cursor-pointer transition-all ease-in-out duration-[1s]' key={a.id}>
+          <Image src={a.poster} layout='fill' objectFit='cover' objectPosition={'center'} />
+        </div></Link>
       ))}
+      </div>
+      }
     
     
     </div>

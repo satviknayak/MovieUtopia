@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { useState } from 'react'
+import Link from 'next/link'
 
 import {prisma} from '../../libs/prisma'
 import superjson from 'superjson'
@@ -48,12 +49,13 @@ export default function cast({cast,movies}) {
               <p className =' font-thin-serif'>{castDet.overview}</p>
 
             </div>
-            <div className='flex overflow-x-auto w-full h-fit pt-[25px]'>
+            <div className='flex overflow-x-auto w-full h-fit pt-[25px] scroll-hide'>
               {movieList?.map((a)=>(
+                <Link href={'/movies/'+a.id}>
                 <div className='flex flex-col p-[10px] w-fit h-fit'>
                   <div className='flex relative w-[110px] h-[160px]'><Image src={a.poster} layout='fill' objectfit='cover' objectposition={'center'} /></div>
                   <h2 >{a.title}</h2>
-                </div>
+                </div></Link>
               ))}
             </div>
          </div>

@@ -19,7 +19,7 @@ export default async (req,res)=>{
         }else if(searchText === '' & genre !== 0){
             results = await prisma.movie.findMany({
                 where:{
-                    genres:{has:genre}
+                    genres:{some:{id:parseInt(genre)}}
                 },
                 select:{
                     id:true,
@@ -31,7 +31,7 @@ export default async (req,res)=>{
             results = await prisma.movie.findMany({
                 where:{
                     title:{contains: searchText},
-                    genres:{has: genre}
+                    genres:{some:{id:parseInt(genre)}}
                 },
                 select:{
                     id:true,
