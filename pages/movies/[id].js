@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import {prisma} from '../../libs/prisma'
 import superjson from 'superjson'
@@ -24,6 +25,9 @@ export async function getServerSideProps(context) {
 
 
 export default function movie({movie,genres,reviews,casts}) {
+
+    const router = useRouter()
+
     const movieDet = movie.json
     const movieGenres = genres.json
     const movieCasts = casts.json
@@ -32,14 +36,15 @@ export default function movie({movie,genres,reviews,casts}) {
     const [addReviewShow,setAddReviewShow] = useState(false)
     const [name,setName] = useState("Anonymous")
     const [text,setText] = useState("")
-    const [rating,setRating] = useState(0)
+    const [rating,setRating] = useState()
     const [movieId,setMovieId] = useState(movieDet.id)
+    const [reviewRating,setReviewRating] = useState("")
 
 
     const submitData = {name:name,text:text,rating:rating,movieId:movieId}
     const handleSubmit = async() =>{
       console.log(submitData)
-      const response = await fetch('api/createReview',{
+      const response = await fetch('/api/createReview/',{
           method:'POST',
           body: superjson.stringify(submitData)
       })
@@ -70,6 +75,7 @@ export default function movie({movie,genres,reviews,casts}) {
               
               <h2 className='font-bold'>Category :<span className='ml-[10px] font-normal'>{movieDet.category}</span></h2>
               <h2 className='font-bold'>Release Date:<span className='ml-[10px] font-normal'>{movieDet.release_date.substring(0,10)}</span> </h2>
+              <h2 className='font-bold'>Rating:<span className='ml-[10px] font-normal'>{movieDet.ratings}</span> </h2>
             </div> 
           </div>
 
@@ -78,7 +84,7 @@ export default function movie({movie,genres,reviews,casts}) {
                 Overview:
               </h1>
               <p>{movieDet.overview}</p>
-
+              <h2 className='font-bold'>Trailer:<Link href={movieDet.trailer}><span className='font-normal ml-[10px] cursor-pointer'>{movieDet.title}</span></Link> </h2>
             </div>
 
             <div className='flex overflow-x-auto w-full h-fit pt-[25px] scroll-hide'>
@@ -127,7 +133,7 @@ export default function movie({movie,genres,reviews,casts}) {
                 </tr>
                 <tr className='w-full'>
                     <td className='text-[0.9rem] sm:text-[1.1rem] w-[30%]'>Rating:</td>
-                    <td className='flex w-full h-[1.75rem] sm:h-[2rem]'><input type={'number'} onChange={(e)=>{setRating(e.target.value)}} value={rating} className='w-full bg-transparent outline-none border-[1px] rounded-sm px-[5px]' /></td>
+                    <td className='flex w-full h-[1.75rem] sm:h-[2rem]'><input type={'number'} onChange={(e)=>{setRating(()=>e.target.value)}} value={rating} className='w-full bg-transparent outline-none border-[1px] rounded-sm px-[5px]' /></td>
                 </tr>
                 </tbody>
             </table>
